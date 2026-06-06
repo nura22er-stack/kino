@@ -5,6 +5,7 @@ import os
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.exceptions import TelegramConflictError
 
 from bot.config import load_config
 from bot.database import Database
@@ -45,6 +46,19 @@ async def _start_health_server() -> asyncio.AbstractServer | None:
     return server
 
 
+async def _run_polling(dp: Dispatcher, bot: Bot) -> None:
+    while True:
+        try:
+            await dp.start_polling(bot)
+            return
+        except TelegramConflictError as exc:
+            logging.warning(
+                "Telegram polling conflict: %s. Retrying in 10 seconds.",
+                exc,
+            )
+            await asyncio.sleep(10)
+
+
 async def main() -> None:
     logging.basicConfig(
         level=logging.INFO,
@@ -67,7 +81,10 @@ async def main() -> None:
     dp.include_router(user_router)
 
     try:
-        await dp.start_polling(bot)
+        bot_info = await bot.get_me()
+        logging.info("Bot authorized as @%s (%s)", bot_info.username, bot_info.id)
+        await bot.delete_webhook(drop_pending_updates=True)
+        await _run_polling(dp, bot)
     finally:
         if health_server is not None:
             health_server.close()

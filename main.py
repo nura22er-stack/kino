@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 import logging
 import os
 
@@ -59,6 +60,18 @@ async def _run_polling(dp: Dispatcher, bot: Bot) -> None:
             await asyncio.sleep(10)
 
 
+def _log_token_diagnostics(token: str) -> None:
+    token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()[:12]
+    token_id = token.split(":", 1)[0] if ":" in token else "missing-colon"
+    logging.info(
+        "BOT_TOKEN diagnostics: id_part=%s length=%s colon_count=%s sha256_12=%s",
+        token_id,
+        len(token),
+        token.count(":"),
+        token_hash,
+    )
+
+
 async def main() -> None:
     logging.basicConfig(
         level=logging.INFO,
@@ -67,6 +80,7 @@ async def main() -> None:
 
     health_server = await _start_health_server()
     config = load_config()
+    _log_token_diagnostics(config.bot_token)
     db = Database(config.db_path)
     await db.connect()
     await db.create_tables()

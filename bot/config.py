@@ -38,6 +38,13 @@ def _parse_admin_ids(value: str) -> set[int]:
     return admin_ids
 
 
+def _normalize_bot_token(value: str) -> str:
+    token = value.strip().strip('"').strip("'").strip()
+    if token.startswith("BOT_TOKEN="):
+        token = token.split("=", 1)[1].strip()
+    return "".join(token.split()).strip('"').strip("'")
+
+
 def _channel_url(chat_id: str) -> str:
     if chat_id.startswith("@"):
         return f"https://t.me/{chat_id.removeprefix('@')}"
@@ -81,7 +88,7 @@ def _parse_required_channels(value: str, legacy_channel: str | None) -> list[Req
 def load_config() -> Config:
     load_dotenv()
 
-    bot_token = os.getenv("BOT_TOKEN", "").strip()
+    bot_token = _normalize_bot_token(os.getenv("BOT_TOKEN", ""))
     if not bot_token:
         raise RuntimeError("BOT_TOKEN .env faylida ko'rsatilmagan.")
 

@@ -2,11 +2,27 @@ services:
   - type: web
     name: kino-bot
     runtime: python
+    autoDeployTrigger: commit
+    maxShutdownDelaySeconds: 10
     buildCommand: pip install -r requirements.txt
     startCommand: python main.py
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.15
+      - key: DB_PATH
+        value: data/kinobot.sqlite3
+      - key: CHANNEL_USERNAME
+        value: "@askafilmlar"
+      - key: REQUIRED_CHANNELS
+        value: "@askafilmlar"
+      - key: CODES_CHANNEL_URL
+        value: https://t.me/askafilmlar
+      - key: PROMO_CHANNEL_USERNAME
+        value: "@Top_Heshtegch"
+      - key: POST_CHANNEL_ID
+        value: "-1003728451117"
+      - key: INSTAGRAM_URL
+        value: https://www.instagram.com/asl.kinolaruz?igsh=Y2pmeW1maXE4M2l0
       - key: BOT_TOKEN
         sync: false
       - key: ADMIN_IDS

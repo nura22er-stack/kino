@@ -40,6 +40,30 @@ DB_PATH=data/kinobot.sqlite3
 python main.py
 ```
 
+## Renderga joylash
+
+Repo ichida Render uchun kerakli fayllar bor:
+
+- `render.yaml` - build/start command va asosiy env sozlamalar
+- `.python-version` - Render Python 3.11 bilan build qilishi uchun
+
+Render sozlamalari:
+
+```text
+Build Command: pip install -r requirements.txt
+Start Command: python main.py
+```
+
+Render Environment bo'limida kamida quyidagilarni qo'shing:
+
+```env
+BOT_TOKEN=BotFather_bergan_token
+ADMIN_IDS=123456789
+```
+
+`BOT_TOKEN`ni GitHubga yozmang. `render.yaml`da bu qiymat `sync: false`
+qilib qoldirilgan, ya'ni token Render dashboardda kiritiladi.
+
 ## Admin ishlatishi
 
 `/addmovie` buyrug'ini yuboring va bot so'ragan ma'lumotlarni ketma-ket kiriting:

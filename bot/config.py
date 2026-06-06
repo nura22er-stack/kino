@@ -29,7 +29,12 @@ def _parse_admin_ids(value: str) -> set[int]:
     for item in value.split(","):
         item = item.strip()
         if item:
-            admin_ids.add(int(item))
+            try:
+                admin_ids.add(int(item))
+            except ValueError as exc:
+                raise RuntimeError(
+                    f"ADMIN_IDS faqat raqam IDlardan iborat bo'lishi kerak: {item!r}"
+                ) from exc
     return admin_ids
 
 

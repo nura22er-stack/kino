@@ -94,4 +94,8 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception:
+        logging.exception("Bot process stopped with an error")
+        raise
